@@ -85,6 +85,13 @@ st.markdown("""
         justify-content: center;
         align-items: center;
     }
+    .personality-box {
+        background-color: #EFF6FF;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        border-left: 4px solid #3B82F6;
+        margin-bottom: 1rem;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -107,6 +114,43 @@ with st.sidebar:
                       help="Introduce tu clave de API de OpenAI para activar el análisis")
     st.markdown('</div>', unsafe_allow_html=True)
     
+    # Sección de personalidad del bot
+    st.markdown("### Personalidad del Asistente")
+    
+    default_prompt = "Eres un asistente experto en análisis de documentos. Responde de manera clara, precisa y profesional."
+    
+    personality_options = {
+        "Profesional": "Eres un asistente experto en análisis de documentos. Responde de manera clara, precisa y profesional.",
+        "Amigable": "Eres un asistente amigable y cercano. Explica los conceptos de forma sencilla y usa un tono conversacional y empático.",
+        "Académico": "Eres un asistente académico con amplios conocimientos. Proporciona respuestas detalladas con referencias a conceptos relevantes. Utiliza un lenguaje técnico cuando sea apropiado.",
+        "Conciso": "Eres un asistente que valora la brevedad. Proporciona respuestas directas y concisas sin información superflua. Ve directo al punto.",
+        "Creativo": "Eres un asistente creativo y entusiasta. Usa metáforas, analogías y ejemplos imaginativos para explicar conceptos. Mantén un tono inspirador.",
+        "Personalizado": "custom"
+    }
+    
+    personality_type = st.selectbox(
+        "Selecciona la personalidad del asistente",
+        options=list(personality_options.keys()),
+        help="Define cómo responderá el asistente a tus preguntas"
+    )
+    
+    if personality_type == "Personalizado":
+        system_prompt = st.text_area(
+            "Define el prompt de sistema personalizado",
+            default_prompt,
+            help="Instrucciones que definen cómo debe comportarse el asistente"
+        )
+    else:
+        system_prompt = personality_options[personality_type]
+    
+    # Mostrar ejemplo de la personalidad seleccionada
+    st.markdown(f"""
+    <div class="personality-box">
+    <strong>Vista previa:</strong><br>
+    <em>{system_prompt[:100]}{'...' if len(system_prompt) > 100 else ''}</em>
+    </div>
+    """, unsafe_allow_html=True)
+        
     if ke:
         st.success("✅ API Key configurada")
     
@@ -142,7 +186,7 @@ with col2:
     #st.image(image, width=200)
     with open('robotS.json') as source:
          animation=json.load(source)
-    st.lottie(animation,width =350)
+    st_lottie(animation, width=350)
     st.markdown('</div>', unsafe_allow_html=True)
 
 # Configurar API key
@@ -207,6 +251,14 @@ if ke:
             
             # Sección de preguntas
             st.markdown('<div class="sub-header">🔍 Realiza tu consulta</div>', unsafe_allow_html=True)
+            
+            # Mostrar la personalidad activa
+            st.markdown(f"""
+            <div class="personality-box">
+            <strong>🤖 Personalidad activa:</strong> {personality_type}
+            </div>
+            """, unsafe_allow_html=True)
+            
             user_question = st.text_area(
                 "Escribe tu pregunta sobre el documento",
                 placeholder="Ej: ¿Cuáles son los puntos principales del documento?",
@@ -217,6 +269,20 @@ if ke:
                 with st.spinner("Analizando tu pregunta..."):
                     docs = knowledge_base.similarity_search(user_question)
                     llm = OpenAI(model_name="gpt-4o-mini")
+                    
+                    # Configurar el modelo con la personalidad seleccionada
+                    formatted_prompt = f"""
+{system_prompt}
+
+Contexto del documento:
+{docs}
+
+Pregunta del usuario:
+{user_question}
+
+Respuesta:
+"""
+                    # Crear la cadena con el prompt personalizado
                     chain = load_qa_chain(llm, chain_type="stuff")
                     
                     with get_openai_callback() as cb:
@@ -234,6 +300,7 @@ if ke:
                             st.write(f"Tokens de prompt: {cb.prompt_tokens}")
                             st.write(f"Tokens de completado: {cb.completion_tokens}")
                             st.write(f"Costo estimado: ${cb.total_cost:.5f}")
+                            st.write(f"Personalidad: {personality_type}")
 else:
     st.warning("⚠️ Por favor, introduce tu API Key de OpenAI en el panel lateral para comenzar.")
     st.info("Esta aplicación requiere una clave de API válida de OpenAI para funcionar correctamente.")
