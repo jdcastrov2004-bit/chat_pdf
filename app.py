@@ -138,8 +138,8 @@ with col1:
 
 with col2:
     st.markdown('<div class="container">', unsafe_allow_html=True)
-    image = Image.open('Chat_pdf.png')
-    st.image(image, width=200)
+    #image = Image.open('Chat_pdf.png')
+    #st.image(image, width=200)
     with open('robotS.json') as source:
          animation=json.load(source)
     st.lottie(animation,width =350)
