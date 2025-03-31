@@ -11,6 +11,8 @@ from langchain.llms import OpenAI
 from langchain.callbacks import get_openai_callback
 import platform
 import time
+from streamlit_lottie import st_lottie
+import json
 
 # Configuración de la página
 st.set_page_config(
@@ -138,6 +140,9 @@ with col2:
     st.markdown('<div class="container">', unsafe_allow_html=True)
     image = Image.open('Chat_pdf.png')
     st.image(image, width=200)
+    #with open('Experts.json') as source:
+    #     animation=json.load(source)
+   #st.lottie(animation,width =350)
     st.markdown('</div>', unsafe_allow_html=True)
 
 # Configurar API key
