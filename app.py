@@ -97,7 +97,7 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
     
-    st.divider()
+    st.markdown("---")
     
     st.markdown("### Configuración")
     st.markdown('<div class="api-input">', unsafe_allow_html=True)
@@ -108,7 +108,7 @@ with st.sidebar:
     if ke:
         st.success("✅ API Key configurada")
     
-    st.divider()
+    st.markdown("---")
     
     # Información técnica
     with st.expander("ℹ️ Información técnica"):
@@ -117,7 +117,7 @@ with st.sidebar:
         st.write("Chunk size: 500")
         st.write("Chunk overlap: 20")
     
-    st.divider()
+    st.markdown("---")
     
     # Footer en el sidebar
     st.markdown('<div class="footer">RAG PDF Analyzer v1.0</div>', unsafe_allow_html=True)
