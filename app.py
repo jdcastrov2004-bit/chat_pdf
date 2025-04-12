@@ -13,9 +13,7 @@ import platform
 import time
 from streamlit_lottie import st_lottie
 import json
-import logging
-logging.basicConfig()
-logging.getLogger("langchain").setLevel(logging.DEBUG)
+
 
 # Configuración de la página
 st.set_page_config(
@@ -271,7 +269,7 @@ if ke:
             if user_question:
                 with st.spinner("Analizando tu pregunta..."):
                     docs = knowledge_base.similarity_search(user_question)
-                    llm = OpenAI(model_name="gpt-4o-mini")
+                    llm = OpenAI(model_name="gpt-4o-mini", verbose=True)
                     
                     # Configurar el modelo con la personalidad seleccionada
                     formatted_prompt = f"""
@@ -286,7 +284,7 @@ Pregunta del usuario:
 Respuesta:
 """
                     # Crear la cadena con el prompt personalizado
-                    chain = load_qa_chain(llm, chain_type="stuff")
+                    chain = load_qa_chain(llm, chain_type="stuff", verbose=True)
                     
                     with get_openai_callback() as cb:
                         response = chain.run(input_documents=docs, question=user_question)
