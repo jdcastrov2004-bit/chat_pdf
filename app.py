@@ -13,6 +13,8 @@ import platform
 import time
 from streamlit_lottie import st_lottie
 import json
+import langchain
+set_verbose(True)
 
 # Configuración de la página
 st.set_page_config(
