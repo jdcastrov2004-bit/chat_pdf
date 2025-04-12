@@ -13,11 +13,7 @@ import platform
 import time
 from streamlit_lottie import st_lottie
 import json
-from langchain.cache import InMemoryCache
-from langchain.globals import set_llm_cache
 
-# Configurar la caché
-set_llm_cache(InMemoryCache())
 
 
 # Configuración de la página
