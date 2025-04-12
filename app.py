@@ -13,8 +13,9 @@ import platform
 import time
 from streamlit_lottie import st_lottie
 import json
-import langchain
-langchain.verbose = True
+import logging
+logging.basicConfig()
+logging.getLogger("langchain").setLevel(logging.DEBUG)
 
 # Configuración de la página
 st.set_page_config(
